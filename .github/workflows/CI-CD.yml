@@ -49,6 +49,9 @@ jobs:
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
+        with:
+          token: ${{ secrets.PAGES_PAT || github.token }}
+          enablement: github-pages-action
 
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
