@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meena Gruhudyog</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#home" class="brand">Meena Gruhudyog</a>
+      <nav class="nav">
+        <a href="#home">Home</a>
+        <a href="products.html">Products</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="menu-toggle" aria-label="Toggle navigation">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="container hero-content">
+        <p class="eyebrow">Natural care for your skin</p>
+        <h1>Handcrafted soap for a softer, healthier glow.</h1>
+        <p class="hero-copy">Explore artisanal blends inspired by nature, made with gentle ingredients and thoughtful design.</p>
+        <div class="hero-benefits">
+          <div class="benefit-item">
+            <strong>No harsh chemicals</strong>
+            <span>Made with gentle oils and plant-based ingredients.</span>
+          </div>
+          <div class="benefit-item">
+            <strong>No artificial colors</strong>
+            <span>Pure, naturally tinted bars for healthier skin.</span>
+          </div>
+          <div class="benefit-item">
+            <strong>Kind to sensitive skin</strong>
+            <span>Low-irritant recipes crafted for daily comfort.</span>
+          </div>
+        </div>
+        <a class="btn btn-primary" href="#contact">Book a consultation</a>
+      </div>
+      <div class="container hero-gallery">
+        <img src="https://images.unsplash.com/photo-1535123344710-16835a35f92c?auto=format&fit=crop&w=900&q=80" alt="Handmade soap bars with dried flowers" />
+        <img src="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&w=900&q=80" alt="Artisan soap and natural ingredients on wooden board" />
+        <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=900&q=80" alt="Handcrafted soap bars in natural light" />
+      </div>
+    </section>
+
+    <section id="about" class="about section">
+      <div class="container about-grid">
+        <div class="about-text">
+          <span class="eyebrow">About Meena Gruhudyog</span>
+          <h2>Pure ingredients. Beautiful results.</h2>
+          <p>At Meena Gruhudyog, every bar is made with nourishing oils, botanical extracts, and skin-loving care. Our soap blends are designed to cleanse, soothe, and leave your skin feeling naturally balanced.</p>
+          <p>We believe in cruelty-free practices, sustainable packaging, and timeless beauty routines that make self-care feel luxurious and simple.</p>
+        </div>
+        <div class="about-cards">
+          <article class="card">
+            <h3>Botanical blends</h3>
+            <p>Each soap is enriched with herbs, essential oils, and floral notes for a spa-like ritual.</p>
+          </article>
+          <article class="card">
+            <h3>Small batch care</h3>
+            <p>Handcrafted in small batches to preserve freshness, quality, and texture.</p>
+          </article>
+          <article class="card">
+            <h3>Skin-friendly</h3>
+            <p>Formulated for all skin types with gentle, nourishing ingredients and minimal additives.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="products-theme section">
+      <div class="container">
+        <div class="section-header">
+          <span class="eyebrow">Our Collections</span>
+          <h2>Natural Care for Every Need</h2>
+          <p>Explore our carefully crafted collections of natural soap and shampoo</p>
+        </div>
+
+        <div class="theme-grid">
+          <a href="products.html?category=soap" class="theme-card soap-theme theme-link">
+            <div class="theme-icon">🧼</div>
+            <h3>Natural Soap</h3>
+            <p class="theme-description">Handcrafted with pure botanical oils and natural ingredients to gently cleanse and nourish your skin.</p>
+            <ul class="theme-features">
+              <li>✓ Rich botanical blends</li>
+              <li>✓ Pure essential oils</li>
+              <li>✓ Skin-loving moisturizers</li>
+              <li>✓ No harsh chemicals</li>
+            </ul>
+            <div class="theme-products">
+              <span class="product-badge">Lavender Soap</span>
+              <span class="product-badge">Neem Soap</span>
+              <span class="product-badge">Honey Soap</span>
+            </div>
+          </a>
+
+          <a href="products.html?category=shampoo" class="theme-card shampoo-theme theme-link">
+            <div class="theme-icon">🌿</div>
+            <h3>Natural Shampoo</h3>
+            <p class="theme-description">Gentle shampoo formulas with plant extracts designed to cleanse, strengthen, and revitalize your hair naturally.</p>
+            <ul class="theme-features">
+              <li>✓ Herbal formulations</li>
+              <li>✓ Natural shine enhancers</li>
+              <li>✓ Scalp-friendly care</li>
+              <li>✓ Sulfate-free</li>
+            </ul>
+            <div class="theme-products">
+              <span class="product-badge">Rose Shampoo</span>
+              <span class="product-badge">Aloe Shampoo</span>
+              <span class="product-badge">Coconut Shampoo</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact section">
+      <div class="container contact-inner">
+        <div class="contact-copy">
+          <span class="eyebrow">Get in touch</span>
+          <h2>Let's craft your perfect soap experience.</h2>
+          <p>Send a message to ask about custom blends, wholesale options, or self-care gift boxes.</p>
+          <p class="contact-detail">Order by phone: <a href="tel:+919428871975">+91 9428871975</a></p>
+        </div>
+
+        <form id="contactForm" class="contact-form">
+          <div class="form-grid">
+            <label>
+              Name
+              <input type="text" name="name" id="name" placeholder="Your name" required />
+            </label>
+            <label>
+              Email
+              <input type="email" name="email" id="email" placeholder="you@example.com" required />
+            </label>
+          </div>
+          <div class="form-grid">
+            <label>
+              Product category
+              <select name="category" id="category" required>
+                <option value="" disabled selected>Select category</option>
+                <option value="soap">Soap</option>
+                <option value="shampoo">Shampoo</option>
+              </select>
+            </label>
+            <label>
+              Product
+              <select name="product" id="product" disabled required>
+                <option value="" disabled selected>Select a product</option>
+              </select>
+            </label>
+            <label>
+              Quantity
+              <input type="number" name="quantity" id="quantity" min="1" step="1" placeholder="1" value="1" required />
+            </label>
+          </div>
+          <label>
+            Message
+            <textarea name="message" id="message" rows="5" placeholder="Tell us what you need" required></textarea>
+          </label>
+          <button type="submit" class="btn btn-secondary">Send message</button>
+          <p id="formStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Meena Gruhudyog | Handcrafted with care.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
