@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Meena Gruhudyog</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .admin-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 1rem;
+    }
+
+    .contacts-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(41, 33, 31, 0.1);
+    }
+
+    .contacts-table thead {
+      background: var(--primary);
+      color: white;
+    }
+
+    .contacts-table th,
+    .contacts-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .contacts-table tbody tr:hover {
+      background: #f9f9f9;
+    }
+
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-new {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-contacted {
+      background: #cfe2ff;
+      color: #084298;
+    }
+
+    .status-completed {
+      background: #d1e7dd;
+      color: #0f5132;
+    }
+
+    .status-rejected {
+      background: #f8d7da;
+      color: #842029;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-small {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-view {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-view:hover {
+      background: var(--primary-dark);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+    }
+
+    .error-message {
+      background: #f8d7da;
+      color: #842029;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 1rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .modal-body {
+      margin-bottom: 1rem;
+    }
+
+    .modal-field {
+      margin-bottom: 1rem;
+    }
+
+    .modal-label {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .modal-value {
+      color: var(--muted);
+      background: #f9f9f9;
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand">Meena Gruhudyog - Admin</a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="admin.html">Dashboard</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    <div class="admin-header">
+      <h1>Contact Submissions Dashboard</h1>
+      <p>View and manage all customer inquiries and orders</p>
+    </div>
+
+    <div id="content">
+      <div class="loading">Loading contacts...</div>
+    </div>
+  </main>
+
+  <!-- Contact Detail Modal -->
+  <div id="contactModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Contact Details</h2>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <label for="statusSelect" class="modal-label">Update Status:</label>
+        <select id="statusSelect" style="width: 100%; padding: 0.5rem; border-radius: 4px;">
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="completed">Completed</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="updateStatus()">Update Status</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentContactId = null;
+
+    async function loadContacts() {
+      try {
+        const response = await fetch('/api/contacts/list');
+        const data = await response.json();
+
+        if (data.success) {
+          renderTable(data.data);
+        } else {
+          renderError(data.message || 'Failed to load contacts');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        renderError('Error loading contacts. Make sure the server is running.');
+      }
+    }
+
+    function renderTable(contacts) {
+      if (contacts.length === 0) {
+        document.getElementById('content').innerHTML = '<div class="loading">No contacts yet.</div>';
+        return;
+      }
+
+      let html = `
+        <table class="contacts-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Category</th>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      contacts.forEach(contact => {
+        const date = new Date(contact.created_at).toLocaleDateString();
+        const statusClass = `status-${contact.status}`;
+
+        html += `
+          <tr>
+            <td>#${contact.id}</td>
+            <td>${escapeHtml(contact.name)}</td>
+            <td>${escapeHtml(contact.email)}</td>
+            <td>${escapeHtml(contact.category)}</td>
+            <td>${escapeHtml(contact.product)}</td>
+            <td>${contact.quantity}</td>
+            <td>${date}</td>
+            <td><span class="status-badge ${statusClass}">${contact.status}</span></td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn-small btn-view" onclick="viewContact(${contact.id})">View</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      document.getElementById('content').innerHTML = html;
+    }
+
+    function renderError(message) {
+      document.getElementById('content').innerHTML = `<div class="error-message">${escapeHtml(message)}</div>`;
+    }
+
+    async function viewContact(id) {
+      try {
+        const response = await fetch(`/api/contacts/${id}`);
+        const data = await response.json();
+
+        if (data.success) {
+          const contact = data.data;
+          const date = new Date(contact.created_at).toLocaleString();
+
+          let html = `
+            <div class="modal-field">
+              <span class="modal-label">ID:</span>
+              <span class="modal-value">#${contact.id}</span>
+            </div>
+            <div class="modal-field">
+              <span class="modal-label">Name:</span>
+              <span class="modal-value">${escapeHtml(contact.name)}</span>
+            </div>
+            <div class="modal-field">
+              <span class="modal-label">Email:</span>
+              <span class="modal-value"><a href="mailto:${escapeHtml(contact.email)}">${escapeHtml(contact.email)}</a></span>
+            </div>
+            <div class="modal-field">
+              <span class="modal-label">Category:</span>
+              <span class="modal-value">${escapeHtml(contact.category)}</span>
+            </div>
+            <div class="modal-field">
+              <span class="modal-label">Product:</span>
+              <span class="modal-value">${escapeHtml(contact.product)}</span>
+            </div>
+            <div class="modal-field">
+              <span class="modal-label">Quantity:</span>
+              <span class="modal-value">${contact.quantity}</span>
+            </div>
+            <div class="modal-field">
+              <span class="modal-label">Message:</span>
+              <span class="modal-value">${escapeHtml(contact.message)}</span>
+            </div>
+            <div class="modal-field">
+              <span class="modal-label">Status:</span>
+              <span class="modal-value">${contact.status}</span>
+            </div>
+            <div class="modal-field">
+              <span class="modal-label">Submitted:</span>
+              <span class="modal-value">${date}</span>
+            </div>
+          `;
+
+          document.getElementById('modalBody').innerHTML = html;
+          document.getElementById('statusSelect').value = contact.status;
+          currentContactId = contact.id;
+          document.getElementById('contactModal').classList.add('active');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error loading contact details');
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('contactModal').classList.remove('active');
+      currentContactId = null;
+    }
+
+    async function updateStatus() {
+      if (!currentContactId) return;
+
+      const status = document.getElementById('statusSelect').value;
+
+      try {
+        const response = await fetch(`/api/contacts/${currentContactId}/status`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert('Status updated successfully');
+          closeModal();
+          loadContacts();
+        } else {
+          alert('Error updating status');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error updating status');
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    window.onclick = function (event) {
+      const modal = document.getElementById('contactModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+
+    // Load contacts on page load
+    loadContacts();
+
+    // Refresh every 30 seconds
+    setInterval(loadContacts, 30000);
+  </script>
+</body>
+</html>

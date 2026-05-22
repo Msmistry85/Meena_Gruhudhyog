@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Meena Gruhudyog</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand">Meena Gruhudyog</a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="login.html">Login</a>
+      </nav>
+      <button class="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>
+    </div>
+  </header>
+
+  <main class="section auth-page">
+    <div class="container auth-card">
+      <div class="auth-header">
+        <span class="eyebrow">Account access</span>
+        <h1>Customer Login</h1>
+        <p>Sign in to manage your orders, track requests, and enjoy exclusive offers.</p>
+      </div>
+
+      <form id="loginForm" class="contact-form">
+        <label>
+          Email
+          <input type="email" id="loginEmail" name="email" placeholder="you@example.com" required>
+        </label>
+
+        <label>
+          Password
+          <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required>
+        </label>
+
+        <div class="form-controls">
+          <label>
+            <input type="checkbox" id="rememberMe">
+            Remember me
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Sign In</button>
+        <p id="loginStatus" class="form-status" aria-live="polite"></p>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Meena Gruhudyog | Handcrafted with care.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

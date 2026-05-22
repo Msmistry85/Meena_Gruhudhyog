@@ -4,6 +4,8 @@ const categorySelect = document.getElementById('category');
 const productSelect = document.getElementById('product');
 const menuToggle = document.querySelector('.menu-toggle');
 const nav = document.querySelector('.nav');
+const loginForm = document.getElementById('loginForm');
+const loginStatus = document.getElementById('loginStatus');
 
 const productOptions = {
   soap: [
@@ -46,7 +48,7 @@ categorySelect?.addEventListener('change', (event) => {
   populateProductOptions(event.target.value);
 });
 
-contactForm?.addEventListener('submit', (event) => {
+contactForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const name = event.target.name.value.trim();
@@ -58,12 +60,84 @@ contactForm?.addEventListener('submit', (event) => {
 
   if (!name || !email || !category || !product || !quantity || !message) {
     formStatus.textContent = 'Please complete all fields before sending.';
+    formStatus.style.color = '#e74c3c';
     return;
   }
 
-  formStatus.textContent = 'Thanks! Your request has been received.';
-  contactForm.reset();
-  populateProductOptions('');
+  formStatus.textContent = 'Sending your request...';
+  formStatus.style.color = '#f39c12';
+
+  try {
+    const response = await fetch('/api/contacts/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        category,
+        product,
+        quantity,
+        message,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      formStatus.textContent = data.message;
+      formStatus.style.color = '#27ae60';
+      contactForm.reset();
+      populateProductOptions('');
+    } else {
+      formStatus.textContent = data.message || 'Error submitting your request. Please try again.';
+      formStatus.style.color = '#e74c3c';
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    formStatus.textContent = 'Error submitting your request. Please check your connection and try again.';
+    formStatus.style.color = '#e74c3c';
+  }
+});
+
+loginForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const email = event.target.email.value.trim();
+  const password = event.target.password.value.trim();
+  const remember = document.getElementById('rememberMe')?.checked;
+
+  if (!email || !password) {
+    loginStatus.textContent = 'Please enter both email and password.';
+    loginStatus.style.color = '#e74c3c';
+    return;
+  }
+
+  loginStatus.textContent = 'Signing in...';
+  loginStatus.style.color = '#f39c12';
+
+  await new Promise((resolve) => setTimeout(resolve, 650));
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    loginStatus.textContent = 'Please enter a valid email address.';
+    loginStatus.style.color = '#e74c3c';
+    return;
+  }
+
+  if (password.length < 6) {
+    loginStatus.textContent = 'Password must be at least 6 characters.';
+    loginStatus.style.color = '#e74c3c';
+    return;
+  }
+
+  loginStatus.textContent = `Welcome back${remember ? ', remember me enabled' : ''}! Redirecting...`;
+  loginStatus.style.color = '#27ae60';
+
+  setTimeout(() => {
+    window.location.href = 'index.html';
+  }, 1100);
 });
 
 // Initialize product dropdown state on page load
