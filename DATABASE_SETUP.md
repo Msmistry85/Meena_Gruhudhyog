@@ -2,12 +2,12 @@
 
 ## Backend Setup for Contact Storage
 
-This guide will help you set up the SQL database and backend server for storing contact submissions.
+This guide helps you set up the Microsoft SQL Server database and backend server for contact submissions.
 
 ### Prerequisites
 
 - Node.js (v16 or higher)
-- MySQL Server (v5.7 or higher)
+- Microsoft SQL Server (Express or Developer edition)
 - npm
 
 ### Installation Steps
@@ -20,34 +20,42 @@ npm install
 
 #### 2. Database Setup
 
-**Option A: Using MySQL CLI**
+Use SQL Server Management Studio, Azure Data Studio, or `sqlcmd` to run the schema file.
+
+**Option A: Using SQL Server Management Studio**
+
+1. Open SSMS and connect to your SQL Server instance.
+2. Open `database/schema.sql`.
+3. Execute the script.
+
+**Option B: Using sqlcmd**
 
 ```bash
-mysql -u root -p < database/schema.sql
+sqlcmd -S localhost\\SQLEXPRESS -i database/schema.sql
 ```
-
-**Option B: Manual Setup**
-
-1. Open MySQL Workbench or phpMyAdmin
-2. Create a new database: `CREATE DATABASE meena_gruhudyog;`
-3. Run the SQL commands from `database/schema.sql`
 
 #### 3. Configure Environment Variables
 
 1. Copy `.env.example` to `.env`:
    ```bash
-   cp .env.example .env
+   copy .env.example .env
    ```
 
-2. Edit `.env` with your database credentials:
-   ```
+2. Edit `.env` with your SQL Server settings:
+   ```ini
    DB_HOST=localhost
-   DB_USER=root
-   DB_PASSWORD=your_mysql_password
+   DB_INSTANCE=SQLEXPRESS
    DB_NAME=meena_gruhudyog
-   DB_PORT=3306
+   DB_DRIVER=msnodesqlv8
+   DB_TRUSTED_CONNECTION=true
+   DB_TRUST_SERVER_CERTIFICATE=true
+   # DB_USER=sa
+   # DB_PASSWORD=your_password
+   # DB_PORT=1433
    PORT=3000
    ```
+
+> If you use SQL Server authentication, set `DB_TRUSTED_CONNECTION=false` and provide `DB_USER`/`DB_PASSWORD`.
 
 #### 4. Start the Server
 
@@ -118,28 +126,33 @@ The server will start at `http://localhost:3000`
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `DB_HOST` | MySQL host | localhost |
-| `DB_USER` | MySQL username | root |
-| `DB_PASSWORD` | MySQL password | (empty) |
+| `DB_HOST` | SQL Server host | localhost |
+| `DB_INSTANCE` | SQL Server named instance | SQLEXPRESS |
 | `DB_NAME` | Database name | meena_gruhudyog |
-| `DB_PORT` | MySQL port | 3306 |
+| `DB_DRIVER` | mssql driver | msnodesqlv8 |
+| `DB_TRUSTED_CONNECTION` | Use Windows authentication | true |
+| `DB_TRUST_SERVER_CERTIFICATE` | Trust server certificate | true |
+| `DB_USER` | SQL Server username | (optional) |
+| `DB_PASSWORD` | SQL Server password | (optional) |
+| `DB_PORT` | SQL Server port | 1433 |
 | `PORT` | Server port | 3000 |
 | `NODE_ENV` | Environment | development |
 
 ### Troubleshooting
 
-**Error: "Can't connect to MySQL server"**
-- Ensure MySQL is running
-- Check host, user, and password in `.env`
-- Verify database exists
+**Error: "Failed to connect to ..."**
+- Confirm SQL Server is running.
+- Verify `DB_HOST` and `DB_INSTANCE` in `.env`.
+- If using SQL authentication, set `DB_TRUSTED_CONNECTION=false` and provide `DB_USER`/`DB_PASSWORD`.
+- Check that the database `meena_gruhudyog` exists and the SQL instance accepts connections.
 
 **Error: "EADDRINUSE: address already in use"**
-- Port 3000 is already in use
-- Change `PORT` in `.env` or kill the process using port 3000
+- Port 3000 is already in use.
+- Change `PORT` in `.env` or stop the process using port 3000.
 
 **Error: "Unknown database"**
-- Run schema.sql to create the database
-- Check database name in `.env`
+- Run `database/schema.sql` against your SQL Server instance.
+- Check `DB_NAME` in `.env`.
 
 ### File Structure
 
@@ -150,7 +163,7 @@ soap/
 ├── .env.example           # Environment variables template
 ├── .env                   # Environment variables (create from .env.example)
 ├── database/
-│   └── schema.sql         # Database schema and seed data
+│   └── schema.sql         # SQL Server schema and seed data
 ├── server/
 │   ├── db.js              # Database connection pool
 │   └── routes/
@@ -169,10 +182,10 @@ pm2 startup
 
 ### Security Notes
 
-- Never commit `.env` to version control
-- Use strong database passwords
-- Consider adding authentication for admin endpoints
-- Validate all user input (already implemented with express-validator)
+- Never commit `.env` to version control.
+- Use strong database passwords.
+- Consider adding authentication for admin endpoints.
+- Validate all user input (already implemented with express-validator).
 
 ### Support
 

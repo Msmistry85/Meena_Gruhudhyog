@@ -84,6 +84,8 @@ contactForm?.addEventListener('submit', async (event) => {
     });
 
     const data = await response.json();
+    console.log(data);
+data.success ? console.log('Contact form submitted successfully') : console.error('Error submitting contact form:', data.message);
 
     if (data.success) {
       formStatus.textContent = data.message;
@@ -101,7 +103,7 @@ contactForm?.addEventListener('submit', async (event) => {
   }
 });
 
-loginForm?.addEventListener('submit', async (event) => {
+/*loginForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const email = event.target.email.value.trim();
@@ -138,7 +140,7 @@ loginForm?.addEventListener('submit', async (event) => {
   setTimeout(() => {
     window.location.href = 'index.html';
   }, 1100);
-});
+});*/
 
 // Initialize product dropdown state on page load
 populateProductOptions('');
